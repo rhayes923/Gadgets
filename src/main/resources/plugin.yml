@@ -1,0 +1,11 @@
+name: Gadgets
+version: 1.0
+main: com.ryan.gadgets.Gadgets
+api-version: 1.19
+commands:
+   gadgets:
+      description: Opens the Gadgets Menu
+      usage: /gadgets
+   teleportstick:
+      description: Summons a TeleportStick
+      usage: /teleportstick
