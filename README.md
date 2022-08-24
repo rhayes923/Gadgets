@@ -5,5 +5,6 @@ or directly through a command. More gadgets will be added in the future.
 ### Commands
 - /gadgets - Opens the gadgets menu
 - /teleportstick - Gives a teleport stick
+- /discoball - Gives a disco ball
 
 This plugin was made for fun.
