@@ -1,7 +1,7 @@
 package com.ryan.gadgets.commands;
 
 import com.ryan.gadgets.Gadgets;
-import com.ryan.gadgets.items.TeleportStick;
+import com.ryan.gadgets.items.DiscoBall;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-public class TeleportStickCommand implements CommandExecutor {
+public class DiscoBallCommand implements CommandExecutor {
 
     FileConfiguration config = Gadgets.getInstance().getConfig();
 
@@ -17,11 +17,11 @@ public class TeleportStickCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (config.getBoolean("enableTeleportStick")) {
+            if (config.getBoolean("enableDiscoBall")) {
                 if (player.getInventory().firstEmpty() != -1) {
-                    TeleportStick tpStick = new TeleportStick();
-                    player.getInventory().addItem(tpStick.getItem());
-                    player.sendMessage(ChatColor.RED + "[Gadgets]" + ChatColor.LIGHT_PURPLE + " Given a Teleport Stick");
+                    DiscoBall disco = new DiscoBall();
+                    player.getInventory().addItem(disco.getItem());
+                    player.sendMessage(ChatColor.RED + "[Gadgets]" + ChatColor.LIGHT_PURPLE + " Given a Disco Ball");
                 } else {
                     player.sendMessage(ChatColor.RED + "[Gadgets] No space in inventory!");
                 }

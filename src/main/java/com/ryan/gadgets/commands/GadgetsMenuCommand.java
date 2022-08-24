@@ -1,5 +1,6 @@
 package com.ryan.gadgets.commands;
 
+import com.ryan.gadgets.items.DiscoBall;
 import com.ryan.gadgets.items.TeleportStick;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -32,6 +33,8 @@ public class GadgetsMenuCommand implements CommandExecutor {
 
             TeleportStick tpStick = new TeleportStick();
             gadgetsMenu.setItem(10, tpStick.getItem());
+            DiscoBall disco = new DiscoBall();
+            gadgetsMenu.setItem(11, disco.getItem());
 
             player.openInventory(gadgetsMenu);
         }
