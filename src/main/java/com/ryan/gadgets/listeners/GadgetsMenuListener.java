@@ -1,22 +1,15 @@
 package com.ryan.gadgets.listeners;
 
-import com.ryan.gadgets.Gadgets;
 import com.ryan.gadgets.items.DiscoBall;
 import com.ryan.gadgets.items.TeleportStick;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.HashMap;
-import java.util.UUID;
-
-public class GadgetsMenuListener implements Listener {
-
-    FileConfiguration config = Gadgets.getInstance().getConfig();
-    final HashMap<UUID, Long> cooldown = new HashMap<>();
+public class GadgetsMenuListener extends GadgetListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
@@ -33,6 +26,7 @@ public class GadgetsMenuListener implements Listener {
                                     TeleportStick tpStick = new TeleportStick();
                                     player.getInventory().addItem(tpStick.getItem());
                                     player.sendMessage(ChatColor.RED + "[Gadgets]" + ChatColor.LIGHT_PURPLE + " Given a Teleport Stick");
+                                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 2F);
                                     cooldown.put(player.getUniqueId(), System.currentTimeMillis());
                                 } else {
                                     player.sendMessage(ChatColor.RED + "[Gadgets] This item is disabled!");
@@ -43,6 +37,7 @@ public class GadgetsMenuListener implements Listener {
                                     DiscoBall disco = new DiscoBall();
                                     player.getInventory().addItem(disco.getItem());
                                     player.sendMessage(ChatColor.RED + "[Gadgets]" + ChatColor.LIGHT_PURPLE + " Given a Disco Ball");
+                                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 2F);
                                     cooldown.put(player.getUniqueId(), System.currentTimeMillis());
                                 } else {
                                     player.sendMessage(ChatColor.RED + "[Gadgets] This item is disabled!");
@@ -59,9 +54,5 @@ public class GadgetsMenuListener implements Listener {
                 }
             }
         }
-    }
-
-    public long calculateTime(Player player) {
-        return System.currentTimeMillis() - cooldown.get(player.getUniqueId());
     }
 }
