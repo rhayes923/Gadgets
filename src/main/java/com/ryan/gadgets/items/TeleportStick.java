@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class TeleportStick extends ItemStack {
+public class TeleportStick extends ItemStack implements Gadget {
 
     final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "teleport-stick");
     ItemStack tpStick;
@@ -28,7 +28,13 @@ public class TeleportStick extends ItemStack {
         tpStick.setItemMeta(itemMeta);
     }
 
+    @Override
     public ItemStack getItem() {
         return tpStick;
+    }
+
+    @Override
+    public String getName() {
+        return "Teleport Stick";
     }
 }

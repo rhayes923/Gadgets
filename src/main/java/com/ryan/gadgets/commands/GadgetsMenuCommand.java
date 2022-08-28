@@ -1,6 +1,7 @@
 package com.ryan.gadgets.commands;
 
 import com.ryan.gadgets.items.DiscoBall;
+import com.ryan.gadgets.items.Gadget;
 import com.ryan.gadgets.items.TeleportStick;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -17,6 +18,8 @@ import java.util.Arrays;
 
 public class GadgetsMenuCommand implements CommandExecutor {
 
+    final Gadget[] gadgets = { new TeleportStick(), new DiscoBall() };
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -31,10 +34,10 @@ public class GadgetsMenuCommand implements CommandExecutor {
             Arrays.fill(emptyContents, glass);
             gadgetsMenu.setContents(emptyContents);
 
-            TeleportStick tpStick = new TeleportStick();
-            gadgetsMenu.setItem(10, tpStick.getItem());
-            DiscoBall disco = new DiscoBall();
-            gadgetsMenu.setItem(11, disco.getItem());
+            int i = 10;
+            for (Gadget gadget : gadgets) {
+                gadgetsMenu.setItem(i++, gadget.getItem());
+            }
 
             player.openInventory(gadgetsMenu);
         }

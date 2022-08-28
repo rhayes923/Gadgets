@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class DiscoBall extends ItemStack {
+public class DiscoBall extends ItemStack implements Gadget {
 
     final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "disco-ball");
     ItemStack disco;
@@ -28,7 +28,13 @@ public class DiscoBall extends ItemStack {
         disco.setItemMeta(itemMeta);
     }
 
+    @Override
     public ItemStack getItem() {
         return disco;
+    }
+
+    @Override
+    public String getName() {
+        return "Disco Ball";
     }
 }
