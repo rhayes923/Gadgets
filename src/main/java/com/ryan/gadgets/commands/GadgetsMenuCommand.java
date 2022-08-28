@@ -2,6 +2,7 @@ package com.ryan.gadgets.commands;
 
 import com.ryan.gadgets.items.DiscoBall;
 import com.ryan.gadgets.items.Gadget;
+import com.ryan.gadgets.items.GrapplingHook;
 import com.ryan.gadgets.items.TeleportStick;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 
 public class GadgetsMenuCommand implements CommandExecutor {
 
-    final Gadget[] gadgets = { new TeleportStick(), new DiscoBall() };
+    final Gadget[] gadgets = { new TeleportStick(), new DiscoBall(), new GrapplingHook() };
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

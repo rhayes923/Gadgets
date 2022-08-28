@@ -7,7 +7,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -18,53 +20,57 @@ public class TeleportStickListener extends GadgetListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if (!checkGadget(e, player, "enableTeleportStick", key, Material.STICK)) {
-            e.setCancelled(true);
-            return;
-        }
+        if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            if (checkGadget(player, key, Material.STICK)) {
+                if (config.getBoolean("enableTeleportStick")) {
+                    e.setCancelled(true);
+                    if (calculateTime(player) > 1000) {
+                        Block block = player.getTargetBlockExact(config.getInt("teleportStickDistance"), FluidCollisionMode.NEVER);
+                        Location location = player.getLocation();
+                        if (block != null && block.getType() != Material.AIR) {
+                            location = block.getLocation();
+                            location.add(0.5, 1, 0.5);
+                            location.setYaw(player.getLocation().getYaw());
+                            location.setPitch(player.getLocation().getPitch());
+                        } else {
+                            Vector direction = location.getDirection();
+                            direction.normalize();
+                            direction.multiply(config.getInt("teleportStickDistance"));
+                            location.add(direction);
+                        }
+                        Location finalLocation = location;
 
-        if (calculateTime(player) > 1000) {
-            Block block = player.getTargetBlockExact(config.getInt("teleportStickDistance"), FluidCollisionMode.NEVER);
-            Location location = player.getLocation();
-            if (block != null && block.getType() != Material.AIR) {
-                location = block.getLocation();
-                location.add(0.5, 1, 0.5);
-                location.setYaw(player.getLocation().getYaw());
-                location.setPitch(player.getLocation().getPitch());
-            } else {
-                Vector direction = location.getDirection();
-                direction.normalize();
-                direction.multiply(config.getInt("teleportStickDistance"));
-                location.add(direction);
-            }
-            Location finalLocation = location;
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                player.teleport(finalLocation);
+                            }
+                        }.runTask(Gadgets.getInstance());
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    player.teleport(finalLocation);
-                }
-            }.runTask(Gadgets.getInstance());
+                        player.sendMessage(ChatColor.RED + "[TeleportStick]" + ChatColor.LIGHT_PURPLE + " Teleporting...");
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 3.0f, 0.5f);
 
-            player.sendMessage(ChatColor.RED + "[TeleportStick]" + ChatColor.LIGHT_PURPLE + " Teleporting...");
-            player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 3.0f, 0.5f);
+                        new BukkitRunnable() {
+                            int total = 0;
 
-            new BukkitRunnable() {
-                int total = 0;
+                            @Override
+                            public void run() {
+                                player.spawnParticle(Particle.SPELL_MOB, player.getLocation(), 0, 200 / 255D, 50 / 255D, 200 / 255D, 1);
+                                if (total >= 15) {
+                                    this.cancel();
+                                }
+                                total++;
+                            }
+                        }.runTaskTimer(Gadgets.getInstance(), 0, 0);
 
-                @Override
-                public void run() {
-                    player.spawnParticle(Particle.SPELL_MOB, player.getLocation(), 0, 200 / 255D, 50 / 255D, 200 / 255D, 1);
-                    if (total >= 15) {
-                        this.cancel();
+                        cooldown.put(player.getUniqueId(), System.currentTimeMillis());
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You must wait 1 second!");
                     }
-                    total++;
+                } else {
+                    player.sendMessage(ChatColor.RED + "This item is disabled!");
                 }
-            }.runTaskTimer(Gadgets.getInstance(), 0, 0);
-
-            cooldown.put(player.getUniqueId(), System.currentTimeMillis());
-        } else {
-            player.sendMessage(ChatColor.RED + "You must wait 1 second!");
+            }
         }
     }
 }

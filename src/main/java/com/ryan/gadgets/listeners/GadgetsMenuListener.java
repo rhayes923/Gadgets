@@ -2,6 +2,7 @@ package com.ryan.gadgets.listeners;
 
 import com.ryan.gadgets.items.DiscoBall;
 import com.ryan.gadgets.items.Gadget;
+import com.ryan.gadgets.items.GrapplingHook;
 import com.ryan.gadgets.items.TeleportStick;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 
 public class GadgetsMenuListener extends GadgetListener implements Listener {
 
-    final Gadget[] gadgets = { new TeleportStick(), new DiscoBall() };
+    final Gadget[] gadgets = { new TeleportStick(), new DiscoBall(), new GrapplingHook()};
     final HashMap<String, String> configValues = new HashMap<String, String>() {
         {
             for (Gadget gadget : gadgets) {

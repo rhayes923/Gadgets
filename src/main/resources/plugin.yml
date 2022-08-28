@@ -12,3 +12,6 @@ commands:
    discoball:
       description: Gives a Disco Ball
       usage: /discoball
+   grapplinghook:
+      description: Gives a Grappling Hook
+      usage: /grapplinghook
