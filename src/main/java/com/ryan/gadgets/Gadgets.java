@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Gadgets extends JavaPlugin {
 
-    FileConfiguration config = getConfig();
+    final FileConfiguration config = getConfig();
     static Gadgets instance;
 
     @Override

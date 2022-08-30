@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class GrapplingHookCommand implements CommandExecutor {
 
-    FileConfiguration config = Gadgets.getInstance().getConfig();
+    final FileConfiguration config = Gadgets.getInstance().getConfig();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

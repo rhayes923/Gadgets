@@ -37,4 +37,9 @@ public class GrapplingHook extends ItemStack implements Gadget {
     public String getName() {
         return "Grappling Hook";
     }
+
+    @Override
+    public NamespacedKey getKey() {
+        return KEY;
+    }
 }

@@ -1,6 +1,8 @@
 package com.ryan.gadgets.listeners;
 
 import com.ryan.gadgets.Gadgets;
+import com.ryan.gadgets.utils.Cooldown;
+import com.ryan.gadgets.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -15,16 +17,14 @@ import org.bukkit.util.Vector;
 
 public class TeleportStickListener extends GadgetListener implements Listener {
 
-    NamespacedKey key = new NamespacedKey(Gadgets.getInstance(), "teleport-stick");
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            if (checkGadget(player, key, Material.STICK)) {
+            if (checkGadget(player, Utils.getKey("TeleportStick"), Material.STICK)) {
                 if (config.getBoolean("enableTeleportStick")) {
                     e.setCancelled(true);
-                    if (calculateTime(player) > 1000) {
+                    if (!cooldowns.containsKey(player.getUniqueId())) {
                         Block block = player.getTargetBlockExact(config.getInt("teleportStickDistance"), FluidCollisionMode.NEVER);
                         Location location = player.getLocation();
                         if (block != null && block.getType() != Material.AIR) {
@@ -63,9 +63,11 @@ public class TeleportStickListener extends GadgetListener implements Listener {
                             }
                         }.runTaskTimer(Gadgets.getInstance(), 0, 0);
 
-                        cooldown.put(player.getUniqueId(), System.currentTimeMillis());
+                        new Cooldown(player, cooldowns, 2).runTaskTimer(Gadgets.getInstance(), 0, 20);
+                        cooldowns.put(player.getUniqueId(), 2);
                     } else {
-                        player.sendMessage(ChatColor.RED + "You must wait 1 second!");
+                        int time = cooldowns.get(player.getUniqueId());
+                        player.sendMessage(ChatColor.RED + "You must wait " + time + (time > 1 ? " seconds!" : " second!"));
                     }
                 } else {
                     player.sendMessage(ChatColor.RED + "This item is disabled!");

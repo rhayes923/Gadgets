@@ -1,9 +1,8 @@
 package com.ryan.gadgets.listeners;
 
-import com.ryan.gadgets.Gadgets;
+import com.ryan.gadgets.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,19 +13,22 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class GrapplingHookListener extends GadgetListener implements Listener {
 
-    NamespacedKey key = new NamespacedKey(Gadgets.getInstance(), "grappling-hook");
-    HashMap<UUID, Boolean> usingGrapplingHook = new HashMap<>();
+    final Set<UUID> usingGrapplingHook = new HashSet<>();
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            usingGrapplingHook.putIfAbsent(e.getPlayer().getUniqueId(), false);
-            usingGrapplingHook.put(e.getPlayer().getUniqueId(), checkGadget(e.getPlayer(), key, Material.FISHING_ROD));
+            if (checkGadget(e.getPlayer(), Utils.getKey("GrapplingHook"), Material.FISHING_ROD)) {
+                usingGrapplingHook.add(e.getPlayer().getUniqueId());
+            } else {
+                usingGrapplingHook.remove(e.getPlayer().getUniqueId());
+            }
             if (!config.getBoolean("enableGrapplingHook")) {
                 e.getPlayer().sendMessage(ChatColor.RED + "This item is disabled!");
                 e.setCancelled(true);
@@ -41,7 +43,7 @@ public class GrapplingHookListener extends GadgetListener implements Listener {
             return;
         }
 
-        if (usingGrapplingHook.get(e.getPlayer().getUniqueId())) {
+        if (usingGrapplingHook.contains(e.getPlayer().getUniqueId())) {
             if (e.getState() != PlayerFishEvent.State.FISHING && e.getState() != PlayerFishEvent.State.REEL_IN) {
                 e.getHook().remove();
                 e.setCancelled(true);
@@ -61,7 +63,7 @@ public class GrapplingHookListener extends GadgetListener implements Listener {
 
     @EventHandler
     public void onItemDamage(PlayerItemDamageEvent e) {
-        if (usingGrapplingHook.get(e.getPlayer().getUniqueId())) {
+        if (usingGrapplingHook.contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }

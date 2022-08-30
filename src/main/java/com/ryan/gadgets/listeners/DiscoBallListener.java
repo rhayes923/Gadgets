@@ -1,6 +1,8 @@
 package com.ryan.gadgets.listeners;
 
 import com.ryan.gadgets.Gadgets;
+import com.ryan.gadgets.utils.Cooldown;
+import com.ryan.gadgets.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
@@ -13,7 +15,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -21,7 +22,6 @@ import java.util.Random;
 
 public class DiscoBallListener extends GadgetListener implements Listener {
 
-    NamespacedKey key = new NamespacedKey(Gadgets.getInstance(), "disco-ball");
     final Material[] COLORS = {Material.RED_STAINED_GLASS, Material.ORANGE_STAINED_GLASS, Material.YELLOW_STAINED_GLASS,
             Material.GREEN_STAINED_GLASS, Material.BLUE_STAINED_GLASS, Material.PURPLE_STAINED_GLASS};
 
@@ -29,10 +29,10 @@ public class DiscoBallListener extends GadgetListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            if (checkGadget(player, key, Material.WHITE_STAINED_GLASS)) {
+            if (checkGadget(player, Utils.getKey("DiscoBall"), Material.WHITE_STAINED_GLASS)) {
                 if (config.getBoolean("enableDiscoBall")) {
                     e.setCancelled(true);
-                    if (calculateTime(player) > 30000) {
+                    if (!cooldowns.containsKey(player.getUniqueId())) {
                         Location location = player.getLocation().add(0, 3.5, 0);
                         if (location.getBlock().getType() == Material.AIR) {
                             location.getWorld().playSound(location, Sound.MUSIC_DISC_CHIRP, 3F, 1F);
@@ -93,12 +93,13 @@ public class DiscoBallListener extends GadgetListener implements Listener {
                                 }
                             }.runTaskTimer(Gadgets.getInstance(), 0, 1);
 
-                            cooldown.put(player.getUniqueId(), System.currentTimeMillis());
+                            new Cooldown(player, cooldowns, 31).runTaskTimer(Gadgets.getInstance(), 0, 20);
+                            cooldowns.put(player.getUniqueId(), 31);
                         } else {
                             player.sendMessage(ChatColor.RED + "[Gadgets] Cannot use that here!");
                         }
                     } else {
-                        int time = 30 - (int) calculateTime(player) / 1000;
+                        int time = cooldowns.get(player.getUniqueId());
                         player.sendMessage(ChatColor.RED + "You must wait " + time + (time > 1 ? " seconds!" : " second!"));
                     }
                 } else {
@@ -110,18 +111,8 @@ public class DiscoBallListener extends GadgetListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (e.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
-            PersistentDataContainer container = e.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer();
-            if (container.has(key, PersistentDataType.STRING)) {
-                e.setCancelled(true);
-            }
-        }
-
-        if (e.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-            PersistentDataContainer container = e.getPlayer().getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer();
-            if (container.has(key, PersistentDataType.STRING)) {
-                e.setCancelled(true);
-            }
+        if (e.getItemInHand().getItemMeta().getPersistentDataContainer().has(Utils.getKey("DiscoBall"), PersistentDataType.STRING)) {
+            e.setCancelled(true);
         }
     }
 }

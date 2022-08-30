@@ -37,4 +37,9 @@ public class TeleportStick extends ItemStack implements Gadget {
     public String getName() {
         return "Teleport Stick";
     }
+
+    @Override
+    public NamespacedKey getKey() {
+        return KEY;
+    }
 }

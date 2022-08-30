@@ -11,27 +11,21 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class GadgetListener {
 
-    static FileConfiguration config = Gadgets.getInstance().getConfig();
-    HashMap<UUID, Long> cooldown = new HashMap<>();
+    static final FileConfiguration config = Gadgets.getInstance().getConfig();
+    final Map<UUID, Integer> cooldowns = new HashMap<>();
 
     public boolean checkGadget(Player player, NamespacedKey KEY, Material material) {
         if (player.getInventory().getItemInMainHand().getType() == material) {
             ItemStack item = player.getInventory().getItemInMainHand();
             ItemMeta itemMeta = item.getItemMeta();
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-            if (container.has(KEY, PersistentDataType.STRING)) {
-                cooldown.putIfAbsent(player.getUniqueId(), 0L);
-                return true;
-            }
+            return container.has(KEY, PersistentDataType.STRING);
         }
         return false;
-    }
-
-    public long calculateTime(Player player) {
-        return System.currentTimeMillis() - cooldown.get(player.getUniqueId());
     }
 }

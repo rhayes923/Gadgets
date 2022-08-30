@@ -1,9 +1,9 @@
 package com.ryan.gadgets.listeners;
 
-import com.ryan.gadgets.items.DiscoBall;
+import com.ryan.gadgets.Gadgets;
 import com.ryan.gadgets.items.Gadget;
-import com.ryan.gadgets.items.GrapplingHook;
-import com.ryan.gadgets.items.TeleportStick;
+import com.ryan.gadgets.utils.Cooldown;
+import com.ryan.gadgets.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -12,18 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.HashMap;
-
 public class GadgetsMenuListener extends GadgetListener implements Listener {
-
-    final Gadget[] gadgets = { new TeleportStick(), new DiscoBall(), new GrapplingHook()};
-    final HashMap<String, String> configValues = new HashMap<String, String>() {
-        {
-            for (Gadget gadget : gadgets) {
-                put(gadget.getName(), "enable" + gadget.getClass().getSimpleName());
-            }
-        }
-    };
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
@@ -31,25 +20,24 @@ public class GadgetsMenuListener extends GadgetListener implements Listener {
         if (e.getView().getTitle().equals("Gadgets")) {
             e.setCancelled(true);
             if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
-                cooldown.putIfAbsent(player.getUniqueId(), 0L);
-                if (calculateTime(player) > 3000) {
+                if (!cooldowns.containsKey(player.getUniqueId())) {
                     if (player.getInventory().firstEmpty() != -1) {
                         String name = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-                        if (config.getBoolean(configValues.get(name))) {
-                            for (Gadget gadget : gadgets) {
-                                if (gadget.getName().equalsIgnoreCase(name)) {
+                        for (Gadget gadget : Utils.getGadgets()) {
+                            if (gadget.getName().equalsIgnoreCase(name)) {
+                                if (config.getBoolean("enable" + name.replaceAll("\\s", ""))) {
                                     giveGadget(player, gadget);
                                     return;
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "[Gadgets] This item is disabled!");
                                 }
                             }
-                        } else {
-                            player.sendMessage(ChatColor.RED + "[Gadgets] This item is disabled!");
                         }
                     } else {
                         player.sendMessage(ChatColor.RED + "[Gadgets] No space in inventory!");
                     }
                 } else {
-                    int time = 3 - (int) calculateTime(player) / 1000;
+                    int time = cooldowns.get(player.getUniqueId());
                     player.sendMessage(ChatColor.RED + "You must wait " + time + (time > 1 ? " seconds!" : " second!"));
                 }
             }
@@ -60,6 +48,7 @@ public class GadgetsMenuListener extends GadgetListener implements Listener {
         player.getInventory().addItem(gadget.getItem());
         player.sendMessage(ChatColor.RED + "[Gadgets]" + ChatColor.LIGHT_PURPLE + " Given a " + gadget.getName());
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 2F);
-        cooldown.put(player.getUniqueId(), System.currentTimeMillis());
+        new Cooldown(player, cooldowns, 4).runTaskTimer(Gadgets.getInstance(), 0, 20);
+        cooldowns.put(player.getUniqueId(), 4);
     }
 }

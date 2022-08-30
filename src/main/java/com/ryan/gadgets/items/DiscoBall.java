@@ -37,4 +37,9 @@ public class DiscoBall extends ItemStack implements Gadget {
     public String getName() {
         return "Disco Ball";
     }
+
+    @Override
+    public NamespacedKey getKey() {
+        return KEY;
+    }
 }
