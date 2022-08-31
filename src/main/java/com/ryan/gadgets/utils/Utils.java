@@ -1,5 +1,6 @@
 package com.ryan.gadgets.utils;
 
+import com.ryan.gadgets.Gadgets;
 import com.ryan.gadgets.items.DiscoBall;
 import com.ryan.gadgets.items.Gadget;
 import com.ryan.gadgets.items.GrapplingHook;
@@ -19,7 +20,7 @@ public class Utils {
             case "GrapplingHook":
                 return gadgets[2].getKey();
         }
-        return null;
+        return new NamespacedKey(Gadgets.getInstance(), "None");
     }
 
     public static Gadget[] getGadgets() {

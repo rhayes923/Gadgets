@@ -63,8 +63,8 @@ public class TeleportStickListener extends GadgetListener implements Listener {
                             }
                         }.runTaskTimer(Gadgets.getInstance(), 0, 0);
 
-                        new Cooldown(player, cooldowns, 2).runTaskTimer(Gadgets.getInstance(), 0, 20);
-                        cooldowns.put(player.getUniqueId(), 2);
+                        new Cooldown(player, cooldowns, 1).runTaskTimer(Gadgets.getInstance(), 0, 20);
+                        cooldowns.put(player.getUniqueId(), 1);
                     } else {
                         int time = cooldowns.get(player.getUniqueId());
                         player.sendMessage(ChatColor.RED + "You must wait " + time + (time > 1 ? " seconds!" : " second!"));

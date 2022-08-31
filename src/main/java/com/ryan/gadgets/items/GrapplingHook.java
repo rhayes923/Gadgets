@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class GrapplingHook extends ItemStack implements Gadget {
 
@@ -20,12 +20,14 @@ public class GrapplingHook extends ItemStack implements Gadget {
     public GrapplingHook() {
         grapplingHook = new ItemStack(Material.FISHING_ROD);
         ItemMeta itemMeta = grapplingHook.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.GREEN + "Grappling Hook");
-        itemMeta.setLore(Arrays.asList(ChatColor.DARK_GREEN + "Travel where you can reach"));
-        itemMeta.addEnchant(Enchantment.LURE, 0, true);
-        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        itemMeta.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, "Grappling Hook");
-        grapplingHook.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(ChatColor.GREEN + "Grappling Hook");
+            itemMeta.setLore(Collections.singletonList(ChatColor.DARK_GREEN + "Travel where you can reach"));
+            itemMeta.addEnchant(Enchantment.LURE, 0, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, "Grappling Hook");
+            grapplingHook.setItemMeta(itemMeta);
+        }
     }
 
     @Override

@@ -7,7 +7,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
@@ -23,8 +22,9 @@ public abstract class GadgetListener {
         if (player.getInventory().getItemInMainHand().getType() == material) {
             ItemStack item = player.getInventory().getItemInMainHand();
             ItemMeta itemMeta = item.getItemMeta();
-            PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-            return container.has(KEY, PersistentDataType.STRING);
+            if (itemMeta != null) {
+                return itemMeta.getPersistentDataContainer().has(KEY, PersistentDataType.STRING);
+            }
         }
         return false;
     }

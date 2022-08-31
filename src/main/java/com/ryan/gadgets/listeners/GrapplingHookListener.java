@@ -25,15 +25,16 @@ public class GrapplingHookListener extends GadgetListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             if (checkGadget(e.getPlayer(), Utils.getKey("GrapplingHook"), Material.FISHING_ROD)) {
+                if (!config.getBoolean("enableGrapplingHook")) {
+                    e.getPlayer().sendMessage(ChatColor.RED + "This item is disabled!");
+                    e.setCancelled(true);
+                    return;
+                }
                 usingGrapplingHook.add(e.getPlayer().getUniqueId());
-            } else {
-                usingGrapplingHook.remove(e.getPlayer().getUniqueId());
-            }
-            if (!config.getBoolean("enableGrapplingHook")) {
-                e.getPlayer().sendMessage(ChatColor.RED + "This item is disabled!");
-                e.setCancelled(true);
+                return;
             }
         }
+        usingGrapplingHook.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler

@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class TeleportStick extends ItemStack implements Gadget {
 
@@ -20,12 +20,14 @@ public class TeleportStick extends ItemStack implements Gadget {
     public TeleportStick() {
         tpStick = new ItemStack(Material.STICK);
         ItemMeta itemMeta = tpStick.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport Stick");
-        itemMeta.setLore(Arrays.asList("A Teleport Stick"));
-        itemMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        itemMeta.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, "Teleport Stick");
-        tpStick.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport Stick");
+            itemMeta.setLore(Collections.singletonList("A Teleport Stick"));
+            itemMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, "Teleport Stick");
+            tpStick.setItemMeta(itemMeta);
+        }
     }
 
     @Override

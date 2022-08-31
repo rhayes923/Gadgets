@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class DiscoBall extends ItemStack implements Gadget {
 
@@ -20,12 +20,14 @@ public class DiscoBall extends ItemStack implements Gadget {
     public DiscoBall() {
         disco = new ItemStack(Material.WHITE_STAINED_GLASS);
         ItemMeta itemMeta = disco.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.AQUA + "Disco Ball");
-        itemMeta.setLore(Arrays.asList(ChatColor.BLUE + "" + ChatColor.ITALIC + "Vibe"));
-        itemMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
-        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        itemMeta.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, "Disco Ball");
-        disco.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(ChatColor.AQUA + "Disco Ball");
+            itemMeta.setLore(Collections.singletonList(ChatColor.BLUE + "" + ChatColor.ITALIC + "Vibe"));
+            itemMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 0, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, "Disco Ball");
+            disco.setItemMeta(itemMeta);
+        }
     }
 
     @Override

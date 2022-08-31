@@ -11,6 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Optional;
 
 public class GadgetsMenuListener extends GadgetListener implements Listener {
 
@@ -22,7 +25,8 @@ public class GadgetsMenuListener extends GadgetListener implements Listener {
             if (e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
                 if (!cooldowns.containsKey(player.getUniqueId())) {
                     if (player.getInventory().firstEmpty() != -1) {
-                        String name = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+                        String name = ChatColor.stripColor(Optional.ofNullable(e.getCurrentItem().getItemMeta())
+                                .map(ItemMeta::getDisplayName).orElse("None"));
                         for (Gadget gadget : Utils.getGadgets()) {
                             if (gadget.getName().equalsIgnoreCase(name)) {
                                 if (config.getBoolean("enable" + name.replaceAll("\\s", ""))) {
@@ -48,7 +52,7 @@ public class GadgetsMenuListener extends GadgetListener implements Listener {
         player.getInventory().addItem(gadget.getItem());
         player.sendMessage(ChatColor.RED + "[Gadgets]" + ChatColor.LIGHT_PURPLE + " Given a " + gadget.getName());
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 2F);
-        new Cooldown(player, cooldowns, 4).runTaskTimer(Gadgets.getInstance(), 0, 20);
-        cooldowns.put(player.getUniqueId(), 4);
+        new Cooldown(player, cooldowns, 3).runTaskTimer(Gadgets.getInstance(), 0, 20);
+        cooldowns.put(player.getUniqueId(), 3);
     }
 }

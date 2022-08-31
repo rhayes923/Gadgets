@@ -15,9 +15,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class DiscoBallListener extends GadgetListener implements Listener {
@@ -35,7 +37,7 @@ public class DiscoBallListener extends GadgetListener implements Listener {
                     if (!cooldowns.containsKey(player.getUniqueId())) {
                         Location location = player.getLocation().add(0, 3.5, 0);
                         if (location.getBlock().getType() == Material.AIR) {
-                            location.getWorld().playSound(location, Sound.MUSIC_DISC_CHIRP, 3F, 1F);
+                            Optional.ofNullable(location.getWorld()).ifPresent(loc -> loc.playSound(location, Sound.MUSIC_DISC_CHIRP, 3F, 1F));
 
                             ArmorStand as = (ArmorStand) player.getWorld().spawnEntity(location.clone().subtract(0, 1.75, 0), EntityType.ARMOR_STAND);
                             as.setGravity(false);
@@ -44,22 +46,24 @@ public class DiscoBallListener extends GadgetListener implements Listener {
 
                             new BukkitRunnable() {
                                 int total = 0;
-                                Random random = new Random();
+                                final Random random = new Random();
                                 double x = 0;
                                 double y = 0;
                                 double z = 0;
                                 double theta = 0;
-                                Location[] rotations = new Location[4];
+                                final Location[] rotations = new Location[4];
 
                                 @Override
                                 public void run() {
-                                    if (total % 10 == 0)
+                                    if (total % 10 == 0 && as.getEquipment() != null) {
                                         as.getEquipment().setHelmet(new ItemStack(COLORS[random.nextInt(6)]));
-                                    theta += Math.PI / 16;
+                                    }
 
+                                    theta += Math.PI / 16;
                                     as.setHeadPose(as.getHeadPose().add(0, 0.1, 0));
-                                    if (total % 2 == 0)
+                                    if (total % 2 == 0) {
                                         as.teleport(as.getLocation().clone().add(0, Math.sin(theta) * 0.025, 0));
+                                    }
 
                                     rotations[0] = location.clone().add(Math.cos(theta), Math.sin(theta), Math.sin(theta));
                                     rotations[1] = location.clone().add(Math.cos(theta + Math.PI), Math.sin(theta), Math.sin(theta + Math.PI));
@@ -73,9 +77,9 @@ public class DiscoBallListener extends GadgetListener implements Listener {
 
                                     if (total % 10 == 0) {
                                         for (int i = 0; i < 10; i++) {
-                                            x = (Math.random() * 2) - 1;
-                                            y = (Math.random() * 2) - 1;
-                                            z = (Math.random() * 2) - 1;
+                                            x = (random.nextDouble() * 2) - 1;
+                                            y = (random.nextDouble() * 2) - 1;
+                                            z = (random.nextDouble() * 2) - 1;
                                             for (int j = 1; j < 10; j++) {
                                                 location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 0, j * x, j * y, j * z);
                                             }
@@ -93,8 +97,8 @@ public class DiscoBallListener extends GadgetListener implements Listener {
                                 }
                             }.runTaskTimer(Gadgets.getInstance(), 0, 1);
 
-                            new Cooldown(player, cooldowns, 31).runTaskTimer(Gadgets.getInstance(), 0, 20);
-                            cooldowns.put(player.getUniqueId(), 31);
+                            new Cooldown(player, cooldowns, 30).runTaskTimer(Gadgets.getInstance(), 0, 20);
+                            cooldowns.put(player.getUniqueId(), 30);
                         } else {
                             player.sendMessage(ChatColor.RED + "[Gadgets] Cannot use that here!");
                         }
@@ -111,7 +115,8 @@ public class DiscoBallListener extends GadgetListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (e.getItemInHand().getItemMeta().getPersistentDataContainer().has(Utils.getKey("DiscoBall"), PersistentDataType.STRING)) {
+        ItemMeta itemMeta = e.getItemInHand().getItemMeta();
+        if (itemMeta != null && itemMeta.getPersistentDataContainer().has(Utils.getKey("DiscoBall"), PersistentDataType.STRING)) {
             e.setCancelled(true);
         }
     }

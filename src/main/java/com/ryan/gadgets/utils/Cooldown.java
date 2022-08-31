@@ -20,12 +20,11 @@ public class Cooldown extends BukkitRunnable {
 
     @Override
     public void run() {
-        time--;
         if (time <= 0) {
             cooldowns.remove(player.getUniqueId());
             cancel();
         } else {
-            cooldowns.put(player.getUniqueId(), time);
+            cooldowns.put(player.getUniqueId(), time--);
         }
     }
 }

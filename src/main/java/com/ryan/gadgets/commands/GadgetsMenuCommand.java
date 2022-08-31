@@ -12,24 +12,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class GadgetsMenuCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Inventory gadgetsMenu = Bukkit.createInventory(player, 27, "Gadgets");
 
             ItemStack glass = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
             ItemMeta itemMeta = glass.getItemMeta();
-            itemMeta.setDisplayName(ChatColor.DARK_GRAY + "");
-            glass.setItemMeta(itemMeta);
-            ItemStack[] emptyContents = new ItemStack[gadgetsMenu.getSize()];
-            Arrays.fill(emptyContents, glass);
-            gadgetsMenu.setContents(emptyContents);
+            if (itemMeta != null) {
+                itemMeta.setDisplayName(ChatColor.DARK_GRAY + "");
+                glass.setItemMeta(itemMeta);
+                ItemStack[] emptyContents = new ItemStack[gadgetsMenu.getSize()];
+                Arrays.fill(emptyContents, glass);
+                gadgetsMenu.setContents(emptyContents);
+            }
 
             int i = 10;
             for (Gadget gadget : Utils.getGadgets()) {
