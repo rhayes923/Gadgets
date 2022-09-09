@@ -1,6 +1,6 @@
 package com.ryan.gadgets.listeners;
 
-import com.ryan.gadgets.utils.Utils;
+import com.ryan.gadgets.items.GrapplingHook;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class GrapplingHookListener extends GadgetListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            if (checkGadget(e.getPlayer(), Utils.getKey("GrapplingHook"), Material.FISHING_ROD)) {
+            if (checkGadget(e.getPlayer(), GrapplingHook.getKey(), Material.FISHING_ROD)) {
                 if (!config.getBoolean("enableGrapplingHook")) {
                     e.getPlayer().sendMessage(ChatColor.RED + "This item is disabled!");
                     e.setCancelled(true);

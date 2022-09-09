@@ -14,7 +14,7 @@ import java.util.Collections;
 
 public class DiscoBall extends ItemStack implements Gadget {
 
-    final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "disco-ball");
+    static final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "disco-ball");
     ItemStack disco;
 
     public DiscoBall() {
@@ -41,7 +41,11 @@ public class DiscoBall extends ItemStack implements Gadget {
     }
 
     @Override
-    public NamespacedKey getKey() {
+    public int getId() {
+        return 11;
+    }
+
+    public static NamespacedKey getKey() {
         return KEY;
     }
 }

@@ -1,29 +1,29 @@
 package com.ryan.gadgets.utils;
 
-import com.ryan.gadgets.Gadgets;
-import com.ryan.gadgets.items.DiscoBall;
 import com.ryan.gadgets.items.Gadget;
-import com.ryan.gadgets.items.GrapplingHook;
-import com.ryan.gadgets.items.TeleportStick;
-import org.bukkit.NamespacedKey;
+import org.reflections.Reflections;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Utils {
 
-    static final Gadget[] gadgets = {new TeleportStick(), new DiscoBall(), new GrapplingHook()};
+    static final String packageName = "com.ryan.gadgets.items";
 
-    public static NamespacedKey getKey(String gadget) {
-        switch (gadget) {
-            case "TeleportStick":
-                return gadgets[0].getKey();
-            case "DiscoBall":
-                return gadgets[1].getKey();
-            case "GrapplingHook":
-                return gadgets[2].getKey();
+    public static Gadget getGadget(String gadget) {
+        for (Class<?> clazz : new Reflections(packageName).getSubTypesOf(Gadget.class)) {
+            if (gadget.equals(clazz.getSimpleName())) {
+                try {
+                    return (Gadget) clazz.getDeclaredConstructor().newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return new NamespacedKey(Gadgets.getInstance(), "None");
+        return null;
     }
 
-    public static Gadget[] getGadgets() {
-        return gadgets;
+    public static Set<Class<?>> getAllGadgets() {
+        return new HashSet<>(new Reflections(packageName).getSubTypesOf(Gadget.class));
     }
 }

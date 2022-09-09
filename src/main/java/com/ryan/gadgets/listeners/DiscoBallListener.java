@@ -1,8 +1,8 @@
 package com.ryan.gadgets.listeners;
 
 import com.ryan.gadgets.Gadgets;
+import com.ryan.gadgets.items.DiscoBall;
 import com.ryan.gadgets.utils.Cooldown;
-import com.ryan.gadgets.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
@@ -31,7 +31,7 @@ public class DiscoBallListener extends GadgetListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            if (checkGadget(player, Utils.getKey("DiscoBall"), Material.WHITE_STAINED_GLASS)) {
+            if (checkGadget(player, DiscoBall.getKey(), Material.WHITE_STAINED_GLASS)) {
                 if (config.getBoolean("enableDiscoBall")) {
                     e.setCancelled(true);
                     if (!cooldowns.containsKey(player.getUniqueId())) {
@@ -116,7 +116,7 @@ public class DiscoBallListener extends GadgetListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
         ItemMeta itemMeta = e.getItemInHand().getItemMeta();
-        if (itemMeta != null && itemMeta.getPersistentDataContainer().has(Utils.getKey("DiscoBall"), PersistentDataType.STRING)) {
+        if (itemMeta != null && itemMeta.getPersistentDataContainer().has(DiscoBall.getKey(), PersistentDataType.STRING)) {
             e.setCancelled(true);
         }
     }

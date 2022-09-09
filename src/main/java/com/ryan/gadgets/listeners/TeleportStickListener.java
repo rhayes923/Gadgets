@@ -1,8 +1,8 @@
 package com.ryan.gadgets.listeners;
 
 import com.ryan.gadgets.Gadgets;
+import com.ryan.gadgets.items.TeleportStick;
 import com.ryan.gadgets.utils.Cooldown;
-import com.ryan.gadgets.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -21,7 +21,7 @@ public class TeleportStickListener extends GadgetListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (e.getHand() == EquipmentSlot.HAND && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            if (checkGadget(player, Utils.getKey("TeleportStick"), Material.STICK)) {
+            if (checkGadget(player, TeleportStick.getKey(), Material.STICK)) {
                 if (config.getBoolean("enableTeleportStick")) {
                     e.setCancelled(true);
                     if (!cooldowns.containsKey(player.getUniqueId())) {

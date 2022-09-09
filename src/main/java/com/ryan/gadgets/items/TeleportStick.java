@@ -14,7 +14,7 @@ import java.util.Collections;
 
 public class TeleportStick extends ItemStack implements Gadget {
 
-    final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "teleport-stick");
+    static final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "teleport-stick");
     ItemStack tpStick;
 
     public TeleportStick() {
@@ -41,7 +41,11 @@ public class TeleportStick extends ItemStack implements Gadget {
     }
 
     @Override
-    public NamespacedKey getKey() {
+    public int getId() {
+        return 10;
+    }
+
+    public static NamespacedKey getKey() {
         return KEY;
     }
 }

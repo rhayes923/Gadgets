@@ -26,16 +26,11 @@ public class GadgetsMenuListener extends GadgetListener implements Listener {
                 if (!cooldowns.containsKey(player.getUniqueId())) {
                     if (player.getInventory().firstEmpty() != -1) {
                         String name = ChatColor.stripColor(Optional.ofNullable(e.getCurrentItem().getItemMeta())
-                                .map(ItemMeta::getDisplayName).orElse("None"));
-                        for (Gadget gadget : Utils.getGadgets()) {
-                            if (gadget.getName().equalsIgnoreCase(name)) {
-                                if (config.getBoolean("enable" + name.replaceAll("\\s", ""))) {
-                                    giveGadget(player, gadget);
-                                    return;
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "[Gadgets] This item is disabled!");
-                                }
-                            }
+                                .map(ItemMeta::getDisplayName).orElse("None")).replaceAll("\\s", "");
+                        if (config.getBoolean("enable" + name)) {
+                            Optional.ofNullable(Utils.getGadget(name)).ifPresent(gadget -> giveGadget(player, gadget));
+                        } else {
+                            player.sendMessage(ChatColor.RED + "[Gadgets] This item is disabled!");
                         }
                     } else {
                         player.sendMessage(ChatColor.RED + "[Gadgets] No space in inventory!");

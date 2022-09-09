@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 public class GadgetsMenuCommand implements CommandExecutor {
@@ -34,11 +35,14 @@ public class GadgetsMenuCommand implements CommandExecutor {
                 gadgetsMenu.setContents(emptyContents);
             }
 
-            int i = 10;
-            for (Gadget gadget : Utils.getGadgets()) {
-                gadgetsMenu.setItem(i++, gadget.getItem());
+            for (Class<?> clazz : Utils.getAllGadgets()) {
+                try {
+                    Gadget gadget = (Gadget) clazz.getDeclaredConstructor().newInstance();
+                    gadgetsMenu.setItem(gadget.getId(), gadget.getItem());
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
             }
-
             player.openInventory(gadgetsMenu);
         }
         return true;

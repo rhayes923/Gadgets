@@ -14,7 +14,7 @@ import java.util.Collections;
 
 public class GrapplingHook extends ItemStack implements Gadget {
 
-    final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "grappling-hook");
+    static final NamespacedKey KEY = new NamespacedKey(Gadgets.getInstance(), "grappling-hook");
     ItemStack grapplingHook;
 
     public GrapplingHook() {
@@ -41,7 +41,11 @@ public class GrapplingHook extends ItemStack implements Gadget {
     }
 
     @Override
-    public NamespacedKey getKey() {
+    public int getId() {
+        return 12;
+    }
+
+    public static NamespacedKey getKey() {
         return KEY;
     }
 }
